@@ -159,14 +159,15 @@ func Crypt(encrypt bool, algo string, key string, currentpath string, chunk_size
 			fmt.Printf("[+] Processing folder '%s'\n", inpath)
 			return nil
 		} else {
-
+			var start int64 = 0
+			var end int64 = 0	
 			outfilepath := GenOutPath(encrypt, inpath, outpath, fileext)
-			start_offset, end_offset = CalculateOffset(inpath, start_offset, end_offset)
+			start, end = CalculateOffset(inpath, start_offset, end_offset)
 			fmt.Printf("[+] '%s' file '%s' using the '%s' algorithm...\n", action, inpath, algo)
 
 			switch algo {
 			case "aes":
-				AESEncryptDecrypt(encrypt, inpath, key, chunk_size, outfilepath, start_offset, end_offset)
+				AESEncryptDecrypt(encrypt, inpath, key, chunk_size, outfilepath, start, end)
 				if entropy {
 					CalculateAndDisplayEntropy(inpath)
 					CalculateAndDisplayEntropy(outfilepath)
@@ -175,7 +176,7 @@ func Crypt(encrypt bool, algo string, key string, currentpath string, chunk_size
 				fmt.Printf("[+] Done.\n")
 				return nil
 			case "xor":
-				XOREncryptDecrypt(inpath, key, chunk_size, outfilepath, start_offset, end_offset)
+				XOREncryptDecrypt(inpath, key, chunk_size, outfilepath, start, end)
 				if entropy {
 					CalculateAndDisplayEntropy(inpath)
 					CalculateAndDisplayEntropy(outfilepath)
